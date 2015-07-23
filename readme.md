@@ -17,21 +17,33 @@ in your script. use namespace goog_api_helper
 
 * use namespace goog_api_helper
 
-        if (goog_api_helper\load())
+        include 'goog-api-helper/helper.php';
+        
+        /*
+        # helper with custom config
+        $config = ['client_type' => goog_api_helper\ClientType::WEB_APPLICATION,];
+        $helper = new goog_api_helper\Helper($config);
+        */
+        
+        # new helper
+        $helper = new goog_api_helper\Helper();
+        
+        if ($helper->load())
         {
-            $drive = new goog_api_helper\Drive();
-
-            $drive->upload('path/to/file', [
-                    'title' => 'filename',
-                    'destination' => 'path/to/folder/on/drive',
-            ]);
+            # drive helper
+            $drive = $helper->new_drive();
+            $drive->upload(
+                'path/to/file',
+                'filetitle',
+                'path/to/folder/on/drive');     // will be created if one doesnt exist
         }
         else
         {
-            echo "error loading api helper";
+            throw new Exception("error loading api helper");
         }
+        
 
-### Saving Form Data `currently unavailable`
+### Saving Form Data `very slow`
 
 * create user token
 
@@ -39,10 +51,49 @@ in your script. use namespace goog_api_helper
 
 * use namespace goog_api_helper
 
-        if (goog_api_helper\load()) 
+        include 'goog-api-helper/helper.php';
+        
+        # form data
+        $form_data = [
+            'Name'          => 'Sarah Connor',
+            'Email'         => 'sarah@skynet.org',
+            'Date of Birth' => '1992-06-21',
+            'Value-1'       => 2324,
+            'tag_id'        => 'FCHSD88dzv8VD',
+        ];
+        
+        /*
+        # helper with custom config
+        $config = ['client_type' => goog_api_helper\ClientType::WEB_APPLICATION,];
+        $helper = new goog_api_helper\Helper($config);
+        */
+        
+        # new helper
+        $helper = new goog_api_helper\Helper();
+        
+        if ($helper->load())
         {
-            $form = new goog_api_helper\Form('sheet_name');
+            # form helper
+            $form = $helper->new_form(
+                'Test Sheet 1', 'Worksheet 1');
+                
             $form->clear();
-            $form->data(['fieldname' => 'value']);
+            $form->data($form_data);
+            
+            /* 
+            # or you could do
+            foreach ($form_data as $fieldname => $fieldvalue) 
+            {
+                $form->data($fieldname, $fieldvalue);
+            }
+            */
+            
             $form->save();
         }
+        else
+        {
+            throw new Exception("error loading api helper");
+        }
+        
+        
+### Work in progress ...
